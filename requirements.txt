@@ -1,0 +1,7 @@
+streamlit
+PyPDF2
+fixthaipdf
+langchain
+faiss-cpu
+sentence-transformers
+langchain-community
