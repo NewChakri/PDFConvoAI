@@ -10,6 +10,12 @@ from langchain.chains import ConversationalRetrievalChain
 from langchain.llms import HuggingFaceHub
 
 
+# Access the Hugging Face API token from environment variables
+huggingface_api_token = os.getenv("HUGGINGFACEHUB_API_TOKEN")
+
+# Set the Hugging Face token as an environment variable
+os.environ["HUGGINGFACEHUB_API_TOKEN"] = huggingface_api_token
+
 # Function to extract text from PDF files
 def get_pdf_text(pdf_files):
     text = ""
