@@ -10,8 +10,14 @@ from langchain.chains import ConversationalRetrievalChain
 from langchain.llms import HuggingFaceHub
 
 
+
 # Access the Hugging Face API token from environment variables
 huggingface_api_token = os.getenv("HUGGINGFACEHUB_API_TOKEN")
+
+# Check if the token is retrieved correctly
+if huggingface_api_token is None:
+    st.error("Hugging Face API token not found. Please set the token in the environment variables.")
+    st.stop()
 
 # Set the Hugging Face token as an environment variable
 os.environ["HUGGINGFACEHUB_API_TOKEN"] = huggingface_api_token
