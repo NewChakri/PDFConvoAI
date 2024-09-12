@@ -11,9 +11,6 @@ from langchain.llms import HuggingFaceHub
 
 
 
-# Set Hugging Face API Token
-os.environ["HUGGINGFACEHUB_API_TOKEN"] = "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"
-
 # Function to extract text from PDF files
 def get_pdf_text(pdf_files):
     text = ""
