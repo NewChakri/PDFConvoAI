@@ -12,15 +12,14 @@ from langchain.llms import HuggingFaceHub
 
 
 # Access the Hugging Face API token from environment variables
-huggingface_api_token = os.getenv("HUGGINGFACEHUB_API_TOKEN")
-
-# Check if the token is retrieved correctly
-if huggingface_api_token is None:
-    st.error("Hugging Face API token not found. Please set the token in the environment variables.")
-    st.stop()
+#huggingface_api_token = os.getenv("HUGGINGFACEHUB_API_TOKEN")
 
 # Set the Hugging Face token as an environment variable
-os.environ["HUGGINGFACEHUB_API_TOKEN"] = huggingface_api_token
+#os.environ["HUGGINGFACEHUB_API_TOKEN"] = huggingface_api_token
+
+
+# Set Hugging Face API Token
+os.environ["HUGGINGFACEHUB_API_TOKEN"] = "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"
 
 # Function to extract text from PDF files
 def get_pdf_text(pdf_files):
