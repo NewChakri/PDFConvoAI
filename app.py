@@ -11,12 +11,8 @@ from langchain.llms import HuggingFaceHub
 
 
 
-# Access the Hugging Face API token from environment variables
-#huggingface_api_token = os.getenv("HUGGINGFACEHUB_API_TOKEN")
-
-# Set the Hugging Face token as an environment variable
-#os.environ["HUGGINGFACEHUB_API_TOKEN"] = huggingface_api_token
-
+# Set Hugging Face API Token
+os.environ["HUGGINGFACEHUB_API_TOKEN"] = "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"
 
 # Function to extract text from PDF files
 def get_pdf_text(pdf_files):
@@ -58,32 +54,59 @@ def get_conversation_chain(vectorstore):
 
 # Streamlit App
 def main():
-    st.title("Conversational AI with LangChain and Streamlit")
+    st.title("ConvoDocsAI: Conversational AI for PDFs")
+    st.write("Upload your PDF files and chat with AI to retrieve information from them.")
 
-    # Upload PDF Files
-    uploaded_files = st.file_uploader("Upload PDF Files", type=["pdf"], accept_multiple_files=True)
+    # Two columns layout for file upload and conversation
+    col1, col2 = st.columns([1, 2])
+
+    with col1:
+        # Upload PDF Files
+        uploaded_files = st.file_uploader("Upload PDF Files", type=["pdf"], accept_multiple_files=True)
     
-    if uploaded_files:
-        st.write("Processing PDF files...")
+        if uploaded_files:
+            st.write("Processing PDF files...")
 
-        # Extract text from PDFs
-        pdf_text = get_pdf_text(uploaded_files)
+            # Extract text from PDFs
+            pdf_text = get_pdf_text(uploaded_files)
 
-        # Split text into chunks
-        chunks = get_chunk_text(pdf_text)
+            # Split text into chunks
+            chunks = get_chunk_text(pdf_text)
 
-        # Create vector store
-        vectorstore = get_vector_store(chunks)
+            # Create vector store
+            vectorstore = get_vector_store(chunks)
 
-        # Create conversation chain
-        conversation_chain = get_conversation_chain(vectorstore)
+            # Create conversation chain
+            conversation_chain = get_conversation_chain(vectorstore)
 
-        # Start conversation loop
-        st.write("You can now start chatting with the AI.")
+            st.session_state['conversation_chain'] = conversation_chain  # Save to session state for multiple messages
+
+    with col2:
+        # Initialize session state to hold the chat history
+        if 'chat_history' not in st.session_state:
+            st.session_state['chat_history'] = []
+
+        st.header("Chat with AI")
+        
+        # Multi-message conversation: Display chat history
+        for message in st.session_state['chat_history']:
+            st.write(f"You: {message['user']}")
+            st.write(f"AI: {message['ai']}")
+        
+        # Input for user message
         user_input = st.text_input("Ask something:")
         
-        if user_input:
-            response = conversation_chain.run({"question": user_input, "chat_history": []})
+        if user_input and 'conversation_chain' in st.session_state:
+            # Get the conversation chain from session state
+            conversation_chain = st.session_state['conversation_chain']
+            
+            # Use conversation history for the conversation chain
+            response = conversation_chain.run({"question": user_input, "chat_history": st.session_state['chat_history']})
+            
+            # Add user input and AI response to the chat history
+            st.session_state['chat_history'].append({"user": user_input, "ai": response})
+            
+            # Display the latest AI response
             st.write(f"AI: {response}")
 
 if __name__ == "__main__":
